@@ -1,0 +1,82 @@
+<div class="chatbox">
+
+  <div *ngIf="recipient_display_name && !isFullScreenMode" class="chat-header">
+    <span class="avatar">
+        <mat-icon *ngIf="!recipient_avatar_src" class="avatar__icon">person</mat-icon>
+        <img *ngIf="recipient_avatar_src" [src]="recipient_avatar_src" class="avatar__img">
+    </span>
+    <span class="name">
+      {{recipient_display_name}}
+    </span>
+  </div>
+
+  <div class="messages" #msgsContainer (scroll)="onScroll($event)">
+    <div *ngFor="let group of groupedMessageList">
+      <div class="messages-group">
+        <div class="messages-group-label">
+          <div class="hr-sect" *ngIf="isToday(group[0]?.created_at)">
+            <span style="padding: 0 10px;">{{group[0]?.created_at | date: 'shortTime'}}</span>
+          </div>
+          <div class="hr-sect" *ngIf="isYesterday(group[0]?.created_at)">
+            <span style="padding: 0 10px;">Yesterday {{group[0]?.created_at | date: 'shortTime'}}</span>
+          </div>
+          <div class="hr-sect" *ngIf="isWeekDay(group[0]?.created_at)">
+            <span style="padding: 0 10px;">{{group[0]?.created_at | date: 'EEEE'}} {{group[0]?.created_at | date: 'shortTime'}}</span>
+          </div>
+          <div class="hr-sect" *ngIf="!isToday(group[0]?.created_at) &&
+                    !isYesterday(group[0]?.created_at) &&
+                    !isWeekDay(group[0]?.created_at)">
+            <span style="padding: 0 10px;"> {{group[0]?.created_at | date: 'MMM d, y, h:mm a'}}</span>
+          </div>
+        </div>
+        <div tabindex="1" class="message-div" #msgDiv *ngFor="let message of group">
+          <div class="text-icon" [class.self-messages]="message.is_self_message">
+        <span class="avatar" *ngIf="!message.is_self_message">
+        <mat-icon class="avatar__icon">person</mat-icon>
+        <img *ngIf="recipient_avatar_src" [src]="recipient_avatar_src" class="avatar__img">
+      </span>
+            <div>
+              <div class="sender-name" *ngIf="message.is_self_message && this.showSenderName">
+                {{message.sender_display_name}}
+              </div>
+              <p class="message-item">
+                {{message.content}}
+              </p>
+            </div>
+            <span class="avatar" style="vertical-align: middle;" *ngIf="message.is_self_message">
+          <mat-icon>person</mat-icon>
+          <img *ngIf="sender_avatar_src" [src]="sender_avatar_src" class="avatar__img">
+      </span>
+
+            <!--<div class="timeform">-->
+            <!--<mat-icon>date</mat-icon> <span class="timestamp">at {{message.created_at | date : 'dd/MM/yyyy' }}</span>-->
+            <!--</div>-->
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="input-container">
+    <mat-form-field>
+    <textarea #msgInput matInput
+              cdkTextareaAutosize
+              #autosize="cdkTextareaAutosize"
+              cdkAutosizeMinRows="2"
+              cdkAutosizeMaxRows="5"
+              (keyup.enter)="reply()" placeholder="Type a message.." [(ngModel)]="replyContent">
+    </textarea>
+    </mat-form-field>
+
+    <div class="button-wrap">
+      <button mat-raised-button
+              color="primary"
+              class="replyBtn"
+              (click)="reply()">
+        Send
+      </button>
+    </div>
+  </div>
+
+</div>

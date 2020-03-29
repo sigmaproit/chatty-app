@@ -1,0 +1,51 @@
+import { ElementRef, QueryList, OnInit, OnDestroy } from '@angular/core';
+import { PreviewMessage } from '../models';
+import { MessagingService } from './messaging.service';
+export declare class ChatBoxComponent implements OnInit, OnDestroy {
+    private messagingService;
+    msgDivs: QueryList<ElementRef>;
+    msgsContainer: ElementRef;
+    sender_avatar_src: string;
+    recipient_avatar_src: number;
+    sender_display_name: string;
+    recipient_display_name: string;
+    sender_user_id: string;
+    recipient_user_id: string;
+    is_customer_view: boolean;
+    height: string;
+    customer_user_id: number;
+    messageList: PreviewMessage[];
+    groupedMessageList: PreviewMessage[][];
+    latestMsgDatetime: Date;
+    GROUP_MIN_RANGE_IN_MINUTES: number;
+    isFullScreenMode: boolean;
+    showSenderName: boolean;
+    isLoading: any;
+    replyContent: string;
+    msgInput: ElementRef;
+    constructor(messagingService: MessagingService);
+    ngOnInit(): void;
+    loadMore(): void;
+    loadMessages(offset: any): import("rxjs").Observable<{
+        id: number;
+        content: string;
+        created_at: Date;
+        is_self_message: boolean;
+        sender_display_name: string;
+    }[]>;
+    ngAfterViewInit(): void;
+    addNewMessage(msg: any): void;
+    addNewMessagesPage(msgList: PreviewMessage[]): void;
+    groupByTime(msgList: PreviewMessage[]): {
+        groupedList: any[];
+        latestMsgDatetime: Date;
+    };
+    reply(): void;
+    focusOnInputAgain(event: any): void;
+    onScroll(event: any): void;
+    isToday(date: any): boolean;
+    isYesterday(date: any): boolean;
+    isWeekDay(date: any): boolean;
+    getDayName(date: any): string;
+    ngOnDestroy(): void;
+}
